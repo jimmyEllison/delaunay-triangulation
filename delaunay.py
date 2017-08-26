@@ -258,6 +258,18 @@ def main():
         'opensuse': Gradient(
             Color(151, 208, 5),
             Color(34, 120, 8)
+        ),
+        'timber': Gradient(
+            Color(252, 0, 255),
+            Color(0, 219, 222)
+        ),
+        'summer': Gradient(
+            Color(0,195,255),
+            Color(255, 255, 28)
+        ),
+        'ukraine': Gradient(
+            Color(0,79,249),
+            Color(255,249,76)
         )
     }
 
