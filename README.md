@@ -12,7 +12,7 @@ Notes
 Usage
 -----
 ```
-Usage: ./delaunay.py [options]
+Usage: ./delaunay.py [options] or /path/to/python delaunay.py [options]
 
 Options:
   -h, --help            show this help message and exit
