@@ -32,9 +32,9 @@ def generate_random_points(count, area, scale=1, decluster=True):
         cluster_fraction = 2
 
     # Scale the area
-    bound_x, bound_y = int(area[0]*scale), int(area[1]*scale)
+    bound_x, bound_y = int(area[0] * scale), int(area[1] * scale)
 
-    n_extra_points = int(cluster_fraction*count)
+    n_extra_points = int(cluster_fraction * count)
     points = [
         Point(int(randrange(bound_x)), int(randrange(bound_y)))
         for __ in range(0, n_extra_points)
@@ -62,14 +62,14 @@ def generate_rectangular_points(count, area):
     """
     # Reduce the area to lowest terms and calculate grid spacing
     k = gcd(area[0], area[1])
-    reduced_x, reduced_y = area[0]/k, area[1]/k
+    reduced_x, reduced_y = area[0] / k, area[1] / k
     aspect = reduced_x / reduced_y
 
-    count_x = ceil(sqrt(count)*aspect)
-    count_y = ceil(sqrt(count)/aspect)
+    count_x = ceil(sqrt(count) * aspect)
+    count_y = ceil(sqrt(count) / aspect)
 
-    x_spacing = int(max(ceil(area[0]/count_x), 1))
-    y_spacing = int(max(ceil(area[1]/count_y), 1))
+    x_spacing = int(max(ceil(area[0] / count_x), 1))
+    y_spacing = int(max(ceil(area[1] / count_y), 1))
 
     return [
         Point(x, y)
@@ -104,13 +104,13 @@ def generate_equilateral_points(count, area):
     count_x = ceil(sqrt(count))
 
     # Calculate the spacing
-    x_spacing = max(ceil(area[0]/count_x), 1)
-    x_offset = x_spacing/2
-    y_spacing = sqrt(x_spacing**2 - (x_spacing/2)**2)
+    x_spacing = max(ceil(area[0] / count_x), 1)
+    x_offset = x_spacing / 2
+    y_spacing = sqrt(x_spacing ** 2 - (x_spacing / 2) ** 2)
 
     # Generate the points
-    xmax = area[0]+x_spacing+x_offset
-    ymax = area[1]+y_spacing
+    xmax = area[0] + x_spacing + x_offset
+    ymax = area[1] + y_spacing
     y = 0
     odd_row = False
     while y <= ymax:
@@ -164,15 +164,15 @@ def generate_halton_points(count, area, p=2, q=3):
         while ix > 0:
             fx /= p
             rx += fx * (ix % p)
-            ix = int(ix/p)
+            ix = int(ix / p)
 
         while iy > 0:
             fy /= q
             ry += fy * (iy % q)
-            iy = int(iy/q)
+            iy = int(iy / q)
 
         # Scale the point and add to the list
-        points.append(Point(rx*area[0], ry*area[1]))
+        points.append(Point(rx * area[0], ry * area[1]))
 
     # Add four anchor points at the corners
     points.append(Point(0, 0))

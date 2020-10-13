@@ -40,7 +40,6 @@ Functions:
     enclosing_triangle(p): find a triangle enclosing a set of points
     delaunay_triangulation(p): find the Delaunay triangulation of the points p
 """
-from __future__ import division
 from collections import namedtuple
 from math import sqrt, atan2, pi
 
@@ -75,26 +74,29 @@ def midpoint(line):
     Find the midpoint of a line segment.
 
     Arguments:
-    line is a 2-tuple of x,y coordinates, e.g. ((x1,y1),(x2,y2))
+    line is a 2-tuple of x,y coordinates, e.g. ((x1, y1), (x2, y2))
 
     Returns:
     A Point object representing the midpoint of the line.
     """
-    return Point((line.start.x + line.end.x)/2, (line.start.y + line.end.y)/2)
+    x = (line.start.x + line.end.x) / 2
+    y = (line.start.y + line.end.y) / 2
+    return Point(x, y)
 
 
 def slope(line):
     """
-    Find the slope of a line segment. May raise ValueError.
+    Find the slope of a line segment.
+    Raise ValueError if both points are the same.
 
     Arguments:
-    line is a 2-tuple of x,y coordinates, e.g. ((x1,y1),(x2,y2))
+    line is a 2-tuple of x,y coordinates, e.g. ((x1, y1), (x2, y2))
 
     Returns:
     The slope of the line (float) or None for vertical lines
     """
     try:
-        return (line.end.y - line.start.y)/(line.end.x - line.start.x)
+        return (line.end.y - line.start.y) / (line.end.x - line.start.x)
     # Catch exceptions and raise more helpful ones if possible
     except ZeroDivisionError:
         # Raise an error if both points are the same
@@ -107,7 +109,8 @@ def slope(line):
 
 def perp_slope(line):
     """
-    Find the slope of a line perpendicular to a line segment. May raise ValueError.
+    Find the slope of a line perpendicular to a line segment.
+    Raise ValueError if both points are the same.
 
     Arguments:
     line is a 2-tuple of x,y coordinates, e.g. ((x1, y1), (x2, y2))
@@ -117,7 +120,7 @@ def perp_slope(line):
     """
     try:
         # Perpendicular slope is the negative reciprocal of the slope (-dx/dy)
-        return -1*(line.end.x - line.start.x)/(line.end.y - line.start.y)
+        return -1 * (line.end.x - line.start.x) / (line.end.y - line.start.y)
     # Catch exceptions and raise more helpful ones if possible
     except ZeroDivisionError:
         # Raise an error if both points are the same
@@ -141,7 +144,7 @@ def point_slope_to_y_intercept(m, p):
     Returns:
     A Line object corresponding to the original point and slope (m).
     """
-    return Line(m, p.y - m*p.x)
+    return Line(m, p.y - m * p.x)
 
 
 def is_vertical(l):
@@ -189,7 +192,7 @@ def is_collinear(a, b, c):
     True if the points are collinear and False otherwise
     """
     # Calculate the determinant (https://en.wikipedia.org/wiki/Determinant)
-    det = b.x*c.y + a.x*b.y + a.y*c.x - a.y*b.x - a.x*c.y - b.y*c.x
+    det = b.x * c.y + a.x * b.y + a.y * c.x - a.y * b.x - a.x * c.y - b.y * c.x
     return det == 0
 
 
@@ -205,7 +208,7 @@ def lines_intersection(a, b):
     A Point object representing the intersection of a and b or None if there is no intersection.
     """
     try:
-        x = (b.yintercept - a.yintercept)/(a.slope - b.slope)
+        x = (b.yintercept - a.yintercept) / (a.slope - b.slope)
         y = a.slope * x + a.yintercept
         return Point(x, y)
     # Division by zero means the lines are parallel
@@ -296,20 +299,20 @@ def calculate_tri_vertices(side_a, side_b, side_c):
     # Vertical A
     if A.slope is None:
         a_x = side_a.start.x
-        a_y = B.slope*a_x + B.yintercept
+        a_y = B.slope * a_x + B.yintercept
 
         b = lines_intersection(B, C)
 
         c_x = side_a.start.x
-        c_y = C.slope*c_x + C.yintercept
+        c_y = C.slope * c_x + C.yintercept
         return Triangle(Point(a_x, a_y), b, Point(c_x, c_y))
     # Vertical B
     elif B.slope is None:
         a_x = side_b.start.x
-        a_y = C.slope*a_x + C.yintercept
+        a_y = C.slope * a_x + C.yintercept
 
         b_x = side_b.start.x
-        b_y = C.slope*b_x + C.yintercept
+        b_y = C.slope * b_x + C.yintercept
 
         c = lines_intersection(C, A)
         return Triangle(Point(a_x, a_y), Point(b_x, b_y), c)
@@ -318,10 +321,10 @@ def calculate_tri_vertices(side_a, side_b, side_c):
         a = lines_intersection(A, B)
 
         b_x = side_c.start.x
-        b_y = B.slope*b_x + B.yintercept
+        b_y = B.slope * b_x + B.yintercept
 
         c_x = side_c.start.x
-        c_y = A.slope*c_x + A.yintercept
+        c_y = A.slope * c_x + A.yintercept
         return Triangle(a, Point(b_x, b_y), Point(c_x, c_y))
 
     # We may encounter a division by zero error if the slopes are too close
@@ -330,7 +333,6 @@ def calculate_tri_vertices(side_a, side_b, side_c):
         b = lines_intersection(B, C)
         c = lines_intersection(C, A)
         return Triangle(a, b, c)
-
     except ZeroDivisionError:
         return None
 
@@ -407,10 +409,10 @@ def tri_contains_point(t, p):
     # Make sure the point isn't a vertex
     if p == p1 or p == p2 or p == p3:
         return True
-    denom = (p2.y - p3.y)*(p1.x - p3.x) + (p3.x - p2.x)*(p1.y - p3.y)
+    denom = (p2.y - p3.y) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.y - p3.y)
     if denom != 0:
-        alpha = ((p2.y - p3.y)*(p.x - p3.x) + (p3.x - p2.x)*(p.y - p3.y))/denom
-        beta = ((p3.y - p1.y)*(p.x - p3.x) + (p1.x - p3.x)*(p.y - p3.y))/denom
+        alpha = ((p2.y - p3.y) * (p.x - p3.x) + (p3.x - p2.x) * (p.y - p3.y)) / denom
+        beta = ((p3.y - p1.y) * (p.x - p3.x) + (p1.x - p3.x) * (p.y - p3.y)) / denom
         gamma = 1.0 - alpha - beta
         # If all three coordinates are positive, p lies within t
         return alpha+epsilon >= 0 and beta+epsilon >= 0 and gamma+epsilon >= 0
@@ -483,8 +485,8 @@ def tri_centroid(t):
     A Point object representing the centroid of the triangle.
     """
     return Point(
-        ((t.a.x + t.b.x + t.c.x)/3),
-        ((t.a.y + t.b.y + t.c.y)/3)
+        ((t.a.x + t.b.x + t.c.x) / 3),
+        ((t.a.y + t.b.y + t.c.y) / 3)
     )
 
 
@@ -509,14 +511,14 @@ def tri_circumcircle(t):
             max_x = max([v.x for v in t])
             max_y = max([v.y for v in t])
 
-            center = Point((max_x - min_x)/2, (max_y - min_y)/2)
-            radius = sqrt((center.x - max_x)**2 + (center.y - max_y)**2)
+            center = Point((max_x - min_x) / 2, (max_y - min_y) / 2)
+            radius = sqrt((center.x - max_x) ** 2 + (center.y - max_y) ** 2)
             return Circle(center, radius)
         else:
             return None
     else:
         # Get the distance from the center to a vertex
-        radius = sqrt((center.x - t.a.x)**2 + (center.y - t.a.y)**2)
+        radius = sqrt((center.x - t.a.x) ** 2 + (center.y - t.a.y) ** 2)
 
     return Circle(center, radius)
 
@@ -556,10 +558,10 @@ def angle(a, b):
     All angles are in [0, 2*pi)
     """
     a = atan2(a.y - b.y, a.x - b.x) + pi
-    if a >= 2*pi:
-        a -= 2*pi
+    if a >= 2 * pi:
+        a -= 2 * pi
     if a < 0:
-        a += 2*pi
+        a += 2 * pi
     return a
 
 
@@ -575,7 +577,7 @@ def turn_direction(p, q, r):
     0 if points are collinear
     Value < 0 if turn is counter-clockwise
     """
-    return (q.y - p.y)*(r.x - q.x) - (q.x - p.x)*(r.y - q.y)
+    return (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
 
 
 def turn_cw(p, q, r):
@@ -710,7 +712,7 @@ def enclosing_triangle(points):
             hull[2]
         )
     # Convert the hull from a list of points to a list of edges
-    edges = [LineSegment(hull[p-1], hull[p]) for p in xrange(0, len(hull))]
+    edges = [LineSegment(hull[p-1], hull[p]) for p in range(0, len(hull))]
     triangle = None
     # This is not a fast way to do it, but it works and is way easier to
     # implement than the O(n) algorithm
@@ -741,12 +743,12 @@ def enclosing_triangle(points):
 
     # Use the bottom side as the base of the triangle and construct edges that
     # pass through the two top points
-    top_left = Point(xmin-1, ymax+1)
-    top_right = Point(xmax+1, ymax+1)
+    top_left = Point(xmin - 1, ymax + 1)
+    top_right = Point(xmax + 1, ymax + 1)
     # Calculate equations for the edges
     left_edge = point_slope_to_y_intercept(1, top_left)
     right_edge = point_slope_to_y_intercept(-1, top_right)
-    base = point_slope_to_y_intercept(0, Point(xmin-1, ymin-1))
+    base = point_slope_to_y_intercept(0, Point(xmin - 1, ymin - 1))
     # The vertices of the triangle are wherever the edges intersect
     a = lines_intersection(left_edge, right_edge)
     b = lines_intersection(base, left_edge)
@@ -793,7 +795,7 @@ def delaunay_triangulation(points):
         invalid_triangles_vertices = []
         invalid_triangles_edges = []
         for (t, circumcircle) in graph:
-            if sqrt((circumcircle.center.x-p.x)**2+(circumcircle.center.y-p.y)**2) <= circumcircle.radius:
+            if sqrt((circumcircle.center.x-p.x) ** 2 + (circumcircle.center.y-p.y) ** 2) <= circumcircle.radius:
                 invalid_triangles_edges.append(vertices_to_edges(t))
                 invalid_triangles_vertices.append((t, circumcircle))               # Keep the circumcircle so we can remove the item later
         # There is a polygonal hole around the new point. Find its edges

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
 Use Delaunay triangulations to make interesting images.
 
@@ -8,13 +8,7 @@ usage: delaunay.py [-h] [-o OUTPUT_FILENAME] [-n N_POINTS] [-x WIDTH]
 
 Try delaunay.py --help for details.
 """
-from __future__ import print_function
 import sys
-
-# Detect python version before continuing
-if sys.version_info[0] == 3:
-    print("delaunay.py only runs on Python 2.x")
-    sys.exit(78)
 
 import argparse
 from PIL import Image, ImageDraw
@@ -181,8 +175,8 @@ def color_from_image(background_image, triangles):
         centroid = tri_centroid(t)
         # Truncate the coordinates to fit within the boundaries of the image
         int_centroid = (
-            int(min(max(centroid[0], 0), size[0]-1)),
-            int(min(max(centroid[1], 0), size[1]-1))
+            int(min(max(centroid[0], 0), size[0] - 1)),
+            int(min(max(centroid[1], 0), size[1] - 1))
         )
         # Get the color of the image at the centroid
         p = pixels[int_centroid[0], int_centroid[1]]
@@ -205,14 +199,14 @@ def color_from_gradient(gradient, image_size, triangles):
     """
     colors = []
     # The size of the screen
-    s = sqrt(image_size[0]**2+image_size[1]**2)
+    s = sqrt(image_size[0] ** 2 + image_size[1] ** 2)
     for t in triangles:
         # The color is determined by the location of the centroid
         tc = tri_centroid(t)
         # Bound centroid to boundaries of the image
         c = (min(max(0, tc[0]), image_size[0]),
              min(max(0, tc[1]), image_size[1]))
-        frac = sqrt(c[0]**2+c[1]**2)/s
+        frac = sqrt(c[0] ** 2 + c[1] ** 2) / s
         colors.append(calculate_color(gradient, frac))
     return colors
 
@@ -381,7 +375,7 @@ def main():
         for i in range(0, len(colors)):
             c = colors[i]
             d = randrange(options.darken_amount)
-            darkened = Color(max(c.r-d, 0), max(c.g-d, 0), max(c.b-d, 0))
+            darkened = Color(max(c.r - d, 0), max(c.g - d, 0), max(c.b - d, 0))
             colors[i] = darkened
 
     # Set up for anti-aliasing
@@ -423,13 +417,13 @@ def main():
 
     # Resample the image using the built-in Lanczos filter
     if options.antialias:
-        size = (int(size[0]/aa_amount), int(size[1]/aa_amount))
+        size = (int(size[0] / aa_amount), int(size[1] / aa_amount))
         image = image.resize(size, Image.ANTIALIAS)
 
     # Write the image to a file
     image.save(options.output_filename)
-    print('Image saved to %s' % options.output_filename)
-    sys.exit(0)
+    print('Image saved to {}'.format(options.output_filename))
+
 
 # Run the main function
 if __name__ == '__main__':
