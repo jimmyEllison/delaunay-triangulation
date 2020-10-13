@@ -5,10 +5,6 @@ Dependencies
 ------------
 * Uses the Python Imaging Library (PIL) to read/write image files
 
-Notes
-------------
-* delaunay.py only runs on Python 2.x
-
 Usage
 -----
 ```
